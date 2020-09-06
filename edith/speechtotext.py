@@ -8,7 +8,7 @@ sr.Microphone(device_index=1)
 
 r = sr.Recognizer()
 engine=p.init()
-engine.setProperty('rate', 150)
+engine.setProperty('rate', 165)
 voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[7].id)
 
@@ -51,26 +51,7 @@ with sr.Microphone() as source:
            elif recognised_text1 == "play music":
                music()
            elif recognised_text1 == "send message":
-                engine.say("Who do you want to send the message to?")
-                engine.runAndWait()
-                r.adjust_for_ambient_noise(source)
-                contact_name = r.listen(source)
-                try:
-                     contact_name_char = r.recognize_google(contact_name)
-                except sr.UnknownValueError:
-                    engine.say("Could you please repeat yourself")
-                except sr.RequestError as e:
-                    engine.say("Error")
-                engine.say("Who is the message content?")
-                engine.runAndWait()
-                msg_content = r.listen(source)
-                try:
-                     msg_content_char = r.recognize_google(msg_content)
-                except sr.UnknownValueError:
-                    engine.say("Could you please repeat yourself")
-                except sr.RequestError as e:
-                    engine.say("Error")
-                send_msg(contact_name_char,msg_content_char)
+               send_msg()
 
            elif recognised_text1 == "search on wikipedia":
                engine.say("What do you want to search about?")

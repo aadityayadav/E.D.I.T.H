@@ -13,6 +13,11 @@ def sendEmail(to, content):
     server.sendmail('youremail@gmail.com', to, content)
     server.close()
 
+def time():
+
+    strTime = datetime.datetime.now().strftime("%H:%M:%S")
+    speak(f"Sir, the time is {strTime}")
+
 # elif 'play music' in query:
 #             music_dir = 'D:\\Non Critical\\songs\\Favorite Songs2'
 #             songs = os.listdir(music_dir)
