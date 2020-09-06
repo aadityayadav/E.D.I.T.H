@@ -1,28 +1,33 @@
 import speech_recognition as sr
 import pyttsx3 as p
 from web_automation import *
+from wiki_search import *
+from send_messages import *
 
 sr.Microphone(device_index=1)
+
 r = sr.Recognizer()
 engine=p.init()
-engine.setProperty('rate', 180)
+engine.setProperty('rate', 150)
+voices = engine.getProperty('voices')
+engine.setProperty('voice', voices[7].id)
 
 with sr.Microphone() as source:
 
-    engine.say("how are you ")
-    engine.runAndWait()
+    engine.say("Hi, I hope you are doing well! ")
+    # engine.runAndWait()
 
-    r.adjust_for_ambient_noise(source)
-    audio = r.listen(source)
-
-
-    try:
-        recognised_text = r.recognize_google(audio)
-        print(recognised_text)
-    except sr.UnknownValueError:
-        engine.say("Could you please repeat yourself")
-    except sr.RequestError as e:
-        engine.say("Error")
+    # r.adjust_for_ambient_noise(source)
+    # audio = r.listen(source)
+    #
+    #
+    # try:
+    #     recognised_text = r.recognize_google(audio)
+    #     print(recognised_text)
+    # except sr.UnknownValueError:
+    #     engine.say("Could you please repeat yourself")
+    # except sr.RequestError as e:
+    #     engine.say("Error")
 
     engine.say("What would you like me to do?")
     engine.runAndWait()
@@ -35,12 +40,50 @@ with sr.Microphone() as source:
         response = r.listen(source)
 
         try:
+           print("")
+           print("Listening...")
            recognised_text1 = r.recognize_google(response)
-           print(recognised_text1)
+           print("Your Response:{}".format(recognised_text1))
+           print("")
+           recognised_text1= recognised_text1.lower()
            if recognised_text1 == "quit now":
                cont = "quit now"
            elif recognised_text1 == "play music":
                music()
+           elif recognised_text1 == "send message":
+                engine.say("Who do you want to send the message to?")
+                engine.runAndWait()
+                r.adjust_for_ambient_noise(source)
+                contact_name = r.listen(source)
+                try:
+                     contact_name_char = r.recognize_google(contact_name)
+                except sr.UnknownValueError:
+                    engine.say("Could you please repeat yourself")
+                except sr.RequestError as e:
+                    engine.say("Error")
+                engine.say("Who is the message content?")
+                engine.runAndWait()
+                msg_content = r.listen(source)
+                try:
+                     msg_content_char = r.recognize_google(msg_content)
+                except sr.UnknownValueError:
+                    engine.say("Could you please repeat yourself")
+                except sr.RequestError as e:
+                    engine.say("Error")
+                send_msg(contact_name_char,msg_content_char)
+
+           elif recognised_text1 == "search on wikipedia":
+               engine.say("What do you want to search about?")
+               engine.runAndWait()
+               r.adjust_for_ambient_noise(source)
+               search_req = r.listen(source)
+               try:
+                    search_req_char = r.recognize_google(search_req)
+                    search_wiki(search_req_char)
+               except sr.UnknownValueError:
+                   engine.say("Could you please repeat yourself")
+               except sr.RequestError as e:
+                   engine.say("Error")
         except sr.UnknownValueError:
               engine.say("Could you please repeat yourself")
         except sr.RequestError as e:
